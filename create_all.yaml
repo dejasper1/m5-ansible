@@ -1,5 +1,5 @@
 # create_all
 
  - import_playbook: create_vpc.yaml
- - import_playbook: create_ec2.yaml
- # - import_playbook: create_asg.yaml
+ # import_playbook: create_ec2.yaml
+ - import_playbook: create_asg.yaml

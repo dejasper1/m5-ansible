@@ -10,9 +10,31 @@
     tasks:
       - name: Create an ec2 launch template
         ec2_launch_template:
-          name: "my_template"
+          name: lt-m5
           image_id: "ami-09d95fab7fff3776c"
           key_name: module-5-key
-          instance_type: t3.NANO
-          iam_instance_profile: myTestProfile
-          disable_api_termination: true
+          instance_type: t3.nano
+          network_interfaces:
+            - associate_public_ip_address: yes
+              device_index: 0
+          disable_api_termination: false
+          iam_instance_profile: image-gallery-role
+        register: launch_template
+      - name: Create auto-scaling group
+        ec2_asg:
+          name: asg
+          launch_template:
+            version: '1'
+            launch_template_name: "{{ launch_template.latest_template.launch_template_name }}"
+            launch_template_id: "{{ launch_template.latest_template.launch_template_id }}"
+          desired_capacity: "2"
+          min_size: "1"
+          max_size: "2"
+          availability_zones: ["us-east-1a", "us-east-1c"]
+          vpc_zone_identifier: ["{{ public1_subnet.subnet.id}}", "{{ public2_subnet.subnet.id}}"]
+          tags:
+            - environment: production
+              propagate_at_launch: no
+              Name: m5-asg
+
+
