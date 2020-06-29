@@ -1,0 +1,24 @@
+---
+  - hosts: amazonlinux2
+    become: true
+    vars:
+      index_file: ../index.php
+    tasks:
+      - name: Install git
+        package:
+          name: git
+          state: present
+          update_cache: yes
+      - name: Install tree
+        package:
+          name: tree
+          state: present
+      - name: Upload application file
+        copy:
+          src: "{{ index_file }}""
+          dest: /var/www/html
+          mode: 0755
+      - name: Install apache
+        package: name=httpd state=present
+      - name: Ensure apache starts
+        service: name=httpd state=started enabled=yes

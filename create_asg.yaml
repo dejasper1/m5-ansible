@@ -1,0 +1,18 @@
+# Can create or delete AWS Autoscaling Groups
+
+---
+  - hosts: localhost
+    gather_facts: no
+    module_defaults:
+      group/aws:
+        region: "us-east-1"
+
+    tasks:
+      - name: Create an ec2 launch template
+        ec2_launch_template:
+          name: "my_template"
+          image_id: "ami-09d95fab7fff3776c"
+          key_name: module-5-key
+          instance_type: t3.NANO
+          iam_instance_profile: myTestProfile
+          disable_api_termination: true
